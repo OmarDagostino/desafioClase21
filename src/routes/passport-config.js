@@ -8,6 +8,8 @@ import {isValidPassword} from '../util.js';
 
 const inicializaPassport = () => {
 
+// Registrar un usuario nuevo con email y password
+
 passport.use ('registro', new local.Strategy(
     {
       usernameField : 'email', passReqToCallback : true
@@ -43,7 +45,9 @@ passport.use ('registro', new local.Strategy(
     }
   }
   )),
+// fin de Registrar un usuario nuevo con Email y password
 
+// Hacer Login de un usuario o del administrador con Email y Password
 
 passport.use('login', new local.Strategy({
 usernameField:'email', passReqToCallback : true
@@ -71,7 +75,7 @@ usernameField:'email', passReqToCallback : true
     password=crypto.createHmac('sha256','palabraSecreta').update(password).digest('base64')
   
     req.usuario = await managermd.obtenerUsuarioPorEmail({username })
-   
+  
     if(!req.usuario) {
       return done (null,false)
     } else {
@@ -88,21 +92,29 @@ usernameField:'email', passReqToCallback : true
 
 }) )
 
+// fin de hacer login de un usuario o administrador con email y password
+
+// hacer Login con Git Hub
+
 passport.use('loginGitHub', new GitHubStrategy.Strategy({
 
+  clientID:'Iv1.70ce45700889066b',
   
-  callbackURL: 'http://localhost:8080/api/sesions/callbackGithub'
+  // aqui se deben colocar los datos del cliente id y client secret 
+  
 
   }, async(token,tokenfresh, profile, done)=> {
     try {
-      
-      let usuario= await managermd.obtenerUsuarioPorEmail(profile._json.email)
+      let username = profile._json.email
+      let usuario= await managermd.obtenerUsuarioPorEmail({username})
+         
       if(!usuario) {
         let typeofuser='user'
-        await managermd.crearUsuario (profile._json.name,profile._json.email,'',typeofuser)
+        usuario = await managermd.crearUsuario (profile._json.name,profile._json.email,'github',typeofuser)
+        
         return done (null,usuario)
       } else {
-        return done (nul,usuario)
+        return done (null,usuario)
       }
   
     } catch (error){
@@ -110,6 +122,10 @@ passport.use('loginGitHub', new GitHubStrategy.Strategy({
     }
   
   }) )
+
+// fin de hacer Login con Git Hub
+
+// manejo de sesiones con passport
 
 passport.serializeUser((usuario, done) => {
   done(null, usuario.id);
@@ -131,44 +147,17 @@ passport.deserializeUser(async (id, done) => {
   }
 );
 
-/*
+// fin del manejo de sesiones con passport
 
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID: 'YOUR_GITHUB_CLIENT_ID',
-      clientSecret: 'YOUR_GITHUB_CLIENT_SECRET',
-      callbackURL: 'http://localhost:3000/auth/github/callback', // Change to your callback URL
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        // Check if the user already exists in your database
-        let user = await userModel.findOne({ githubId: profile.id });
-
-        if (!user) {
-          // If not, create a new user
-          user = new userModel({
-            githubId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            // Other user properties here
-          });
-
-          await user.save();
-        }
-
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  )
-)*/
-  
+// funcion para validar el formato del correo electronico
 
 function validarCorreoElectronico(correo) {
   const expresionRegular = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   return expresionRegular.test(correo);
 }
+
+// fin de la funcion para validar el formato del correo electronico
+
 }
+
 export default inicializaPassport

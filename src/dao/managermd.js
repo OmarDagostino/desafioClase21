@@ -83,8 +83,7 @@ actualizarCarrito : async  (newcart,cid) =>
         }
       
   } catch (error) {
-    console.error (error)
-    console.error('** **  **Error en el servidor** ** **');
+    console.error (`Error en el servidor ${error}`)
   }
 },
 

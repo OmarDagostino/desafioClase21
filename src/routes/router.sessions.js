@@ -61,6 +61,8 @@ router.post('/registro', passport.authenticate('registro', {
 
 // Login de un usuario o del administrador
 router.post('/login', passport.authenticate('login', { failureRedirect: '/api/sesions/errorLogin' }), (req, res, next) => {
+    
+   
     req.session.usuario = req.user;
     
   
@@ -79,7 +81,16 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/api/se
 // Login con GitHub
 router.get('/loginGitHub', passport.authenticate('loginGitHub', {}), (req, res, next) => { });  
 
-router.get('/callbackGithub',  passport.authenticate('loginGitHub', { failureRedirect: '/api/sesions/errorLoginGitHub' }), (req, res, next) => { });  
+router.get('/callbackGithub',  passport.authenticate('loginGitHub', 
+        { 
+            failureRedirect: '/api/sesions/errorLoginGitHub'
+            
+        } 
+    ),(req, res, next) => { 
+   
+    req.session.usuario = req.user;
+    return res.redirect ('/products')
+    });  
 
 
 // logOut
