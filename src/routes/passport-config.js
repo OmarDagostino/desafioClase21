@@ -90,17 +90,17 @@ usernameField:'email', passReqToCallback : true
 
 passport.use('loginGitHub', new GitHubStrategy.Strategy({
 
-  clientID:'Iv1.70ce45700889066b',
-  clientSecret: 'd16c7f73c24156ac574b5954679c2c3b817e4e3b',
-  callbackURL: 'http://localhost8080/api/sessions/callbackGithub'
+  
+  callbackURL: 'http://localhost:8080/api/sesions/callbackGithub'
 
   }, async(token,tokenfresh, profile, done)=> {
     try {
+      
       let usuario= await managermd.obtenerUsuarioPorEmail(profile._json.email)
       if(!usuario) {
         let typeofuser='user'
         await managermd.crearUsuario (profile._json.name,profile._json.email,'',typeofuser)
-        return done (null,user)
+        return done (null,usuario)
       } else {
         return done (nul,usuario)
       }

@@ -42,7 +42,7 @@ router.get ('/errorLogin', (req,res) => {
 // Login de Git Hub con error
 
 router.get ('/errorLoginGitHub', (req,res) => {
-    res.redirect('/loginGitHub?error=Login con error')    
+    res.redirect('/loginGitHub?error=**Login con error**')    
     });
 
 // registro con error
